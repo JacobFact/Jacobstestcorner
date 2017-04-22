@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-     int sockfd, newsockfd, portno, length, n, pid;
+     int sockfd, sock, newsockfd, portno, length, n, pid;
      socklen_t clilen;
      struct sockaddr_in serv_addr, cli_addr;
      socklen_t fromlen;
@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
      if (sock < 0)
         error("ERROR opening socket");
      bzero((char *) &serv_addr, sizeof(serv_addr));
-     length = sizeof(server);
      portno = atoi(argv[1]);
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -40,9 +39,14 @@ int main(int argc, char *argv[])
      if (bind(sockfd, (struct sockaddr *) &serv_addr,
               sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
+     length = sizeof(server);
+     bzero(&server,length);
+     server.sin_family=AF_INET;
+     server.sin_addr.s_addr=INADDR_ANY;
+     server.sin_port=htons(atoi(argv[1]));
      if (bind(sock,(struct sockaddr *)&server,length)<0) 
               error("ERROR on binding");
-              fromlen = sizeof(struct sockaddr_in);
+     fromlen = sizeof(struct sockaddr_in);
         
      // clear the set
      FD_ZERO(&readfds);
